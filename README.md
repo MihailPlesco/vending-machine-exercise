@@ -33,7 +33,7 @@
 >            ║                   ║                     ────────────────────      ╎
 >                                                         △                      ╎
 >    /buy|sell/╌╌╌╌╌▷ post.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯         / buy_recheck _( [change|product] unavailable, providing choices )_ /
->        ╎                                                │         / buy_success _( { spent:<int>, products:[], change:[] } )_ /
+>        ╎                                                │         / buy_success _( { spent:\<int\>, products:[], change:[] } )_ /
 >        ╎                                                │         / sell_status _( { status:[0:ok|1:error], message:'' )_ /
 >        ╎                                                │                      ╎
 >        ╎                        ╭────/ validate role /──╯                      ╎
