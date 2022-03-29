@@ -1,13 +1,15 @@
-###Vending machine exercise.
-####(simple serverless architecture)
+#Vending machine exercise.
 
-#####Data
+##(simple serverless architecture)
+
+###Data
+
 **users**
 > uid ( = <role>_<username> )
 > username
 > password
 > deposit
-> role:[seller|buyer]
+> role:\[seller|buyer\]
 
 **auths**
 > token
@@ -19,20 +21,18 @@
 > seller_uid
 > product_name
 > cost
-> amount_available
-
-**in-out**.fifo ( reserving purchase )
-> product_uid
 > amount
-> buyer_uid
 
+  
+  
+>
+>                ╱  products  ╲                        ────────────────────
+>            ┌───     stock    ───┐  ◀─────────────▶ ╳ stock-handler.worker ╳ ◁╌╌╮ 
+>            ║                    ║                    ────────────────────      ╎ 
+>                                                         △                      ╎ 
 
+>  / buy|sell /╌╌╌╌╌▷ post.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯                      ╎ 
 
->                ╱in-out.fifo╲                         ────────────────────
->            ┌───    stock    ───┐  ◀──────────────▶ ╳ stock-handler.worker ╳ ◁╌╌╮
->            ║                   ║                     ────────────────────      ╎
->                                                         △                      ╎
->    /buy|sell/╌╌╌╌╌▷ post.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯                      ╎
 >        ╎                                                │                / buy_status  /
 >        ╎                                                │                / sell_status /
 >        ╎                                                │                      ╎
@@ -43,15 +43,17 @@
 >        ╎   ┌───    users    ───┐  ◀──────────────▶ ╳ gatekeeper.worker ╳       ╎
 >        ╎   ║                   ║              ╭╌╌▷   ────────┬────────         ╎
 >        ╎                                      ╎              ╎                 ╎
->    /deposit/╌╌╌╌╌╌▷ deposit.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╯              ╎                 ╎
+  
+>  / deposit /╌╌╌╌╌╌▷ deposit.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╯              ╎                 ╎
+
 >        ╎                                      ╎              ╎                 ╎
 >        ╎      ╭╌╌╌▷ auth.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯              ╎                 ╎
+>        ╎      ╎                                       / auth status /          ╎
+>        ╎      ╎                                       / deposit status /       ╎
 >        ╎      ╎                                              ╎                 ╎
->        ╎      ╎                                         / set token /          ╎
->        ╎      ╎                                              ╎                 ╎
->        ╎      ╎                       ───────────            ╎                 ╎
->        ╰╌╌╌╱ req  ╲ ◁╌╌╌╌╌╌╌╌╌╌╌╌▷  ╳ user.worker ╳ ◁╌╌╌╌╌╌╌╌╯╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯
->            ╲ auth ╱                   ───────────
+>        ╎      ╎                  ───────────                 ╎                 ╎
+>        ╰╌╌╌╱ req  ╲ ◁╌╌╌╌╌╌╌╌╌ ╳ user.worker ╳ (wsess)◁╌╌╌╌╌╌╯╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯
+>            ╲ auth ╱              ───────────
 
 
 #####Requests
@@ -74,7 +76,7 @@
 **user**.worker _sell_ payload:
 > wsess_uid
 > token
-> product_uid?
-> product_name? _( if product\_name: newProduct() )_
-> cost _( if product\_uid: updateProductCost() )_
+> product_uid? _( if product\_uid: update name_if and cost_if )_
+> product_name?
+> cost?
 > amount
