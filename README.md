@@ -32,9 +32,9 @@
 >            ┌───    stock    ───┐  ◀──────────────▶ ╳ stock-handler.worker ╳ ◁╌╌╮
 >            ║                   ║                     ────────────────────      ╎
 >                                                         △                      ╎
->    /buy|sell/╌╌╌╌╌▷ post.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯         / buy_recheck _( [change|product] unavailable, providing choices )_ /
->        ╎                                                │         / buy_success _( { spent:\<int\>, products:[], change:[] } )_ /
->        ╎                                                │         / sell_status _( { status:[0:ok|1:error], message:'' )_ /
+>    /buy|sell/╌╌╌╌╌▷ post.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯                      ╎
+>        ╎                                                │                / buy_status  /
+>        ╎                                                │                / sell_status /
 >        ╎                                                │                      ╎
 >        ╎                        ╭────/ validate role /──╯                      ╎
 >        ╎                        │    / if buyer: updateDeposits() /            ╎
