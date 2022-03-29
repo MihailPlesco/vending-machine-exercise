@@ -1,0 +1,15 @@
+{
+  "name": "vending_machine",
+  "version": "1.0.0",
+  "description": "Vending Machine Exercise",
+  "main": "gateway.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mihail Plesco",
+  "license": "ISC",
+  "dependencies": {
+    "http.cookie": "^1.0.2",
+    "redis": "^4.0.4"
+  }
+}

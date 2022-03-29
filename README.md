@@ -3,13 +3,13 @@
 
 #####Data
 **users**
-> uid
+> uid ( = <role>_<username> )
 > username
 > password
 > deposit
 > role:[seller|buyer]
 
-**sessions**
+**auths**
 > token
 > user_uid
 > timestamp
@@ -39,15 +39,15 @@
 >        ╎                        ╭────/ validate role /──╯                      ╎
 >        ╎                        │    / if buyer: updateDeposits() /            ╎
 >        ╎                        │                                              ╎
->        ╎       ╱  sessions  ╲   ▽                    ─────────────────         ╎
->        ╎   ┌───     users    ───┐  ◀─────────────▶ ╳ gatekeeper.worker ╳       ╎
->        ╎   ║                    ║             ╭╌╌▷   ────────┬────────         ╎
+>        ╎       ╱   auths   ╲    ▽                    ─────────────────         ╎
+>        ╎   ┌───    users    ───┐  ◀──────────────▶ ╳ gatekeeper.worker ╳       ╎
+>        ╎   ║                   ║              ╭╌╌▷   ────────┬────────         ╎
 >        ╎                                      ╎              ╎                 ╎
->    /deposit/╌╌╌╌╌╌▷ post.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯              ╎                 ╎
+>    /deposit/╌╌╌╌╌╌▷ deposit.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╯              ╎                 ╎
 >        ╎                                      ╎              ╎                 ╎
->        ╎      ╭╌╌╌▷ post.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯              ╎                 ╎
+>        ╎      ╭╌╌╌▷ auth.fifo ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯              ╎                 ╎
 >        ╎      ╎                                              ╎                 ╎
->        ╎      ╎                                        / give auth /           ╎
+>        ╎      ╎                                         / set token /          ╎
 >        ╎      ╎                                              ╎                 ╎
 >        ╎      ╎                       ───────────            ╎                 ╎
 >        ╰╌╌╌╱ req  ╲ ◁╌╌╌╌╌╌╌╌╌╌╌╌▷  ╳ user.worker ╳ ◁╌╌╌╌╌╌╌╌╯╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯
@@ -56,19 +56,25 @@
 
 #####Requests
 **user**.worker _reqAuth_ payload:
-> token [<auth_token>|new_(seller|buyer)] _( login | register)_
+> token [(new_)(seller|buyer)] _( register|login with user/pass )_
 > username
 > password
 
 **user**.worker _deposit_ payload:
-> amount:[5,10,20,50,100]
+> wsess_uid
+> token
+> amount:(5|10|20|50|100)
 
 **user**.worker _buy_ payload:
-> product_id
+> wsess_uid
+> token
+> product_uid
 > amount
 
 **user**.worker _sell_ payload:
-> product_id?
+> wsess_uid
+> token
+> product_uid?
 > product_name? _( if product\_name: newProduct() )_
-> cost _( if product\_id: updateProductCost() )_
+> cost _( if product\_uid: updateProductCost() )_
 > amount
