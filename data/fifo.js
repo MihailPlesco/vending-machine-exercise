@@ -7,7 +7,7 @@ module.exports = class fifo {
 
     constructor( client, keyprefix = 'fifo:', first_in_queue_callback, last_in_queue_callback ) {
         this.#client = client
-        this.#keyprefix = 'dfb:' + keyprefix
+        this.#keyprefix = process.env.REDIS_NSPREFIX + ':' + keyprefix
         this.#lock_key = this.#keyprefix + 'LOCK'
         this.#first_in_queue_callback = first_in_queue_callback
         this.#last_in_queue_callback = last_in_queue_callback

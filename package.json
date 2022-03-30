@@ -9,6 +9,7 @@
   "author": "Mihail Plesco",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.0",
     "http.cookie": "^1.0.2",
     "redis": "^4.0.4"
   }

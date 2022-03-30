@@ -1,10 +1,12 @@
+require( 'dotenv' ).config()
+
 module.exports = class dfbWsess {
     #client
     #keyprefix
     
     constructor ( client, keyprefix = 'wsess:' ) {
         this.#client = client
-        this.#keyprefix = 'dfb:' + keyprefix
+        this.#keyprefix = process.env.REDIS_NSPREFIX + ':' + keyprefix
     }
 
     async set( wsess_id, key, value ) {

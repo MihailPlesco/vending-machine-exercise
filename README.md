@@ -2,6 +2,10 @@
 
 ##(simple serverless architecture)
 
+### Running the app:
+- edit .env
+- start the gateway server: ./gateway.js
+
 ###Data
 
 **users**

@@ -1,5 +1,5 @@
+require( 'dotenv' ).config()
 const redis = require( 'redis' )
-const crypto = require( 'crypto' )
 
 const dfbUsers = require( './users.js' )
 const dfbWsess = require( './wsess.js' )
@@ -23,12 +23,11 @@ module.exports = class DataFabrik {
         return this.#dfbStock
     }
 
-    constructor( dnamespace = 'dfb' ) {
+    constructor( dnamespace = process.env.REDIS_NSPREFIX ) {
         this.#keyprefix = dnamespace + ':'
         this.#client = redis.createClient({
-            host: '127.0.0.1',
-            port: 6379,
-            password: '',
+            host: process.env.REDIS_HOST,
+            port: process.env.REDIS_PORT,
             prefix: this.#keyprefix
         })
         this.#client.connect().then(() => {

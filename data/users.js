@@ -1,3 +1,4 @@
+require( 'dotenv' ).config()
 const crypto = require( 'crypto' )
 
 const _ts = () => { return new Date().getTime() }
@@ -11,10 +12,10 @@ module.exports = class dfbUsers {
 
     get keyprefix() { return this.#keyprefix }
     
-    constructor ( client, keyprefix = 'user:', auths_keyprefix = 'dfb:auth:' ) {
+    constructor ( client, keyprefix = 'user:', auths_keyprefix = 'auth:' ) {
         this.#client = client
-        this.#keyprefix = 'dfb:' + keyprefix
-        this.#auths_keyprefix = auths_keyprefix
+        this.#keyprefix = process.env.REDIS_NSPREFIX + ':' + keyprefix
+        this.#auths_keyprefix = process.env.REDIS_NSPREFIX + ':' + auths_keyprefix
     }
 
     validPassword( iuser, password ) {

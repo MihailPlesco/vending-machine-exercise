@@ -1,3 +1,4 @@
+require( 'dotenv' ).config()
 const crypto = require( 'crypto' )
 module.exports = class dfbStock {
     #client
@@ -6,7 +7,7 @@ module.exports = class dfbStock {
 
     constructor( client, keyprefix = 'stock:' ) {
         this.#client = client
-        this.#keyprefix = 'dfb:' + keyprefix
+        this.#keyprefix = process.env.REDIS_NSPREFIX + ':' + keyprefix
     }
 
     async newProduct( data ) {
