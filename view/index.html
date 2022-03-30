@@ -35,18 +35,26 @@
                     <input type="text" id="deposit_amount">
                     <span id="insert_deposit_amount" class="button"></span>
                     <span id="deposit_available">0</span>
+                    <span id="buy_products" class="button _hidden">Buy Products</span>
                 </div>
             </div>
         </div>
         <div id="frame_buy" class="frame">
+            <span class="greeting"></span>
+            <span id="back_to_deposit" class="button"></span>
             <div class="body">
-
+                Products in stock:
+                <div id="products" class="_mv10 _bt1 _pv10"></div>
+                <div class="_mv10 _bt1 _bb1 _pv10">Deposit left: <span id="deposit_left">0</span></div>
+                Purchased:
+                <div id="purchased" class="_mv10 _bt1 _bb1 _pv10"></div>
             </div>
         </div>
         <div id="frame_sell" class="frame">
             <span class="greeting"></span>
             <div class="body">
-                your products in stock: <div id="my_products"></div>
+                Your products in stock: 
+                <div id="my_products" class="_mv10 _bt1 _bb1 _pv10"></div>
                 <input type="text" id="product_name" placeholder="product name">
                 <input type="text" id="product_cost" placeholder="product cost">
                 <input type="text" id="product_amount" placeholder="amount">

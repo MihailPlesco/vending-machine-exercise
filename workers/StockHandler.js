@@ -90,9 +90,6 @@ module.exports = class StockHandler extends Worker{
                 this.dfb.wsess.setReqStatus( item, {'failed': 'unauthorized'} )
             })
         }
-        else {
-            console.log( item )
-        }
     }
 
 }

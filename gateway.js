@@ -74,7 +74,7 @@ const gw_server = http.createServer( async (req, res) => {
         // --- --- --- ---
         var _req_dataOkThen = ( data ) => {}
         var _req_dataErrorCatch = ( err ) => {
-            console.log( err )
+            console.warn( err )
             respondNoContent( res )
         }
         // --- --- --- ---
@@ -142,9 +142,16 @@ const gw_server = http.createServer( async (req, res) => {
                             uw.getAuthToken( )
                             .then( async ( token ) => {
                                 if ( token == uw.data['token'] ) {
-                                    uw.getMyProducts( uw.data['uid'] ).then( ( resp ) => { 
-                                        endResponse( res, JSON.stringify( resp ) )
-                                    } )
+                                    if ( uw.data['uid'] ) {
+                                        uw.getMyProducts( ).then( ( resp ) => { 
+                                            endResponse( res, JSON.stringify( resp ) )
+                                        } )
+                                    }
+                                    else {
+                                        uw.getProducts( ).then( ( resp ) => { 
+                                            endResponse( res, JSON.stringify( resp ) )
+                                        } )
+                                    }
                                 }
                                 else {
                                     _unauthorizedErrorResponse()

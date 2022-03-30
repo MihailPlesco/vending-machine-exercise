@@ -6,6 +6,7 @@ module.exports = class dfbStock {
     #keyprefix
     static ERROR_PRODUCT_NOT_FOUND = 'PRODUCT_NOT_FOUND'
     static ERROR_PRODUCTS_SET_NOT_FOUND = 'PRODUCTS_SET_NOT_FOUND'
+    static ERROR_STOCK_EMPTY = 'STOCK_EMPTY'
 
     constructor( client, keyprefix = 'stock:' ) {
         this.#client = client
@@ -60,6 +61,25 @@ module.exports = class dfbStock {
         })
     }
 
+    async getStock( ) {
+        return new Promise( async ( resolve, reject ) => {
+            var pkeyprefix = this.#keyprefix + 'p:'
+            var pkeys = await this.#client.KEYS( pkeyprefix + '*' )
+            if ( pkeys ) {
+                var products = []
+                var j = -1, puid
+                while ( ++j < pkeys.length ) {
+                    puid = pkeys[ j ].replace(new RegExp(`^${pkeyprefix}`), '')
+                    products.push( await this.getProduct( puid ) )
+                }
+                resolve( products )
+            }
+            else {
+                reject( dfbStock.ERROR_STOCK_EMPTY )
+            }
+        })
+    }
+
     async getProduct( product_uid ) {
         return new Promise( async ( resolve, reject ) => {
             var nrkey = this.#keyprefix + 'p:' + product_uid
@@ -81,7 +101,7 @@ module.exports = class dfbStock {
             var bamount = parseInt( amount )
             var udeposit = parseInt( await this.#client.HGET( this.dfb.users.keyprefix + user_uid, 'deposit' ))
 
-            if ( udeposit > pcost ) {
+            if ( udeposit >= pcost ) {
                 var cart = 0, pamount_left
                 do {
                     pamount_left = parseInt( await this.#client.HINCRBY( pkey, 'amount', -1 ) )

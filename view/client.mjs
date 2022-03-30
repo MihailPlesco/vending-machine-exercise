@@ -89,6 +89,23 @@ export class client {
             }, respond, reject )
         })
     }
+    getProducts() {
+        return new Promise( ( respond, reject ) => {
+            this.xhrpost( '/products', {
+                'token': this.#token,
+                'wsess_id': this.#wsess_id
+            }, respond, reject )
+        })
+    }
+    getStockProducts() {
+        return new Promise( ( respond, reject ) => {
+            this.xhrpost( '/products_all', {
+                'token': this.#token,
+                'wsess_id': this.#wsess_id,
+                'uid': this.profile.uid
+            }, respond, reject )
+        })
+    }
     async deposit( amount ) {
         return new Promise( ( respond, reject ) => {
             this.xhrpost( '/deposit', {
@@ -106,6 +123,16 @@ export class client {
                 'product_name': product['name'],
                 'cost': product['cost'],
                 'amount': product['amount']
+            }, respond, reject )
+        })
+    }
+    async productBuy( product_uid, amount ) {
+        return new Promise( ( respond, reject ) => {
+            this.xhrpost( '/buy', {
+                'token': this.#token,
+                'wsess_id': this.#wsess_id,
+                'product_uid': product_uid,
+                'amount': amount
             }, respond, reject )
         })
     }

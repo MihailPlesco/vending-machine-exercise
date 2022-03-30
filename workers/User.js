@@ -43,6 +43,10 @@ module.exports = class UserWorker extends Worker {
         return this.dfb.stock.getStockSet( this.data['uid'] )
     }
 
+    async getProducts() {
+        return this.dfb.stock.getStock()
+    }
+
     async getReqStatus() {
         return await this.dfb.wsess.get( this.data['wsess_id'], 'req:' + this.data['req_id'] )
     }

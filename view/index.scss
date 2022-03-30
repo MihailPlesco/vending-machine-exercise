@@ -8,8 +8,8 @@ input { vertical-align: top; }
     $hcl_a1: rgb(75, 100, 0);
     @mixin abs-fit { position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
     @mixin abs-centered { position: absolute; left: 50%; top: 50%; transform: translateX(-50%) translateY(-50%); }
-    @mixin abs_ne { position: absolute; left: auto; top: 0; right: 0; bottom: auto; }
-    @mixin abs_nw { position: absolute; left: 0; top: 0; right: auto; bottom: auto; }
+    @mixin abs-ne { position: absolute; left: auto; top: 0; right: 0; bottom: auto; }
+    @mixin abs-nw { position: absolute; left: 0; top: 0; right: auto; bottom: auto; }
 
     background-color: #fff;
     color: $mcl;
@@ -22,6 +22,12 @@ input { vertical-align: top; }
 
     ._ml20 { margin-left: 20px; }
     ._mt25 { margin-top: 25px; }
+    ._mt20 { margin-top: 20px; }
+    ._bt1 { border-top: 1px solid $mcl; }
+    ._bb1 { border-bottom: 1px solid $mcl; }
+    ._mv10 { margin-top: 10px; margin-bottom: 10px; }
+    ._pv10 { padding-top: 10px; padding-bottom: 10px; }
+
     ._hidden { opacity: 0 !important; pointer-events: none !important; }
     input, input:active, input:focus, input:checked { outline: none; }
     input[type='text'], input[type='password'] {
@@ -231,25 +237,80 @@ input { vertical-align: top; }
                 font-size: 32px;
                 font-family: 'Helvetica';
             }
+            #buy_products {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                margin-top: 300px;
+            }
         }
     }
 
     #frame_buy {
         display: none;
+
+        .body { text-align: left; }
+
+        #back_to_deposit {
+            @include abs-ne;
+            display: block;
+            width: 40px; height: 40px;
+            background-image: url(media/ico_buyer.png);
+            background-size: contain;
+            background-position: 50% 50%;
+            margin: 10px 10px 0 0;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        #products {
+            span {
+                cursor: pointer;
+                font-family: monospace;
+                color: $hcl_a1;
+                display: inline-block;
+                vertical-align: bottom;
+                &.name {
+                    width: 180px;
+                    overflow: hidden;
+                }
+            }
+            max-height: 200px;
+            overflow: auto;
+        }
+        #purchased {
+            max-height: 240px;
+            overflow: auto;
+            font-size: 70%;
+            div div {
+                text-align: right;
+            }
+        }
+
+
     }
     #frame_sell {
         display: none;
         input[type='text'] {
             display: block;
-            margin: 15px 5%;
-            width: 90%;
+            margin: 15px 0;
+            width: 100%;
         }
+        .body { text-align: left; }
         #my_products {
+            max-height: 320px;
+            overflow: auto;
             span {
                 cursor: pointer;
                 font-family: monospace;
                 color: $hcl_a1;
-                font-size: 80%;
+                display: inline-block;
+                vertical-align: bottom;
+
+                &.name {
+                    width: 180px;
+                    overflow: hidden;
+                }
             }
         }
     }
