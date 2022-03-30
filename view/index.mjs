@@ -15,6 +15,8 @@ c.onauth('switch_frame', ( user ) => {
         }
         else {
             uframe = 'sell'
+            _qs( '.greeting', _el('frame_sell'))[0].innerHTML = `Hello <span class="name">${user.username}</span>, what do you have?`
+            updateMyProductsList()
         }
         _el('exit').className = ''
     }
@@ -97,6 +99,24 @@ var depositCoin = ( amount ) => {
     })
 }
 
+var updateMyProductsList = () => {
+    c.getMyProducts()
+    .then( ( products ) => {
+        var j = -1;
+        var plist = document.createDocumentFragment(), pitem
+        while( ++j < products.length ) {
+            pitem = document.createElement('div')
+            pitem.textContent = `${products[j].product_name} ( x ${products[j].amount} ) - \$${products[j].cost}` 
+            plist.appendChild( pitem )
+        }
+        _el( 'my_products' ).innerHTML = ''
+        _el( 'my_products' ).appendChild( plist )
+    })
+    .catch( ( err ) => {
+        console.warn( err )
+    })
+}
+
 _el( 'coins' ).addEventListener( 'mousedown', ( evt ) => {
     var val
     if (val = evt.target.getAttribute('data-val')) {
@@ -113,5 +133,35 @@ _el( 'insert_deposit_amount' ).addEventListener( 'mousedown', () => {
     if ( val ) {
         depositCoin( parseInt( val ) )
     }
+})
+
+_el( 'product_new' ).addEventListener( 'click', () => {
+    c.productNew({
+        'name':   _el('product_name').value,
+        'cost':   parseInt( _el('product_cost').value ),
+        'amount': parseInt( _el('product_amount').value )
+    })
+    .then( ( resp ) => {
+        if ( resp['req_id'] ) {
+            setTimeout(()=>{
+                c.getReqStatus( resp['req_id'] )
+                .then( ( resp ) => {
+                    console.log( resp )
+                    if ( resp['success'] ) {
+                        updateMyProductsList()
+                    }
+                    else {
+                        console.warn( resp )
+                    }
+                })
+                .catch( ( resp ) => {
+                    console.warn( resp )
+                })
+            }, 100)
+        }
+    })
+    .catch( ( resp ) => {
+        console.warn( resp )
+    } )
 })
 

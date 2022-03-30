@@ -31,7 +31,7 @@ module.exports = class DataFabrik {
             prefix: this.#keyprefix
         })
         this.#client.connect().then(() => {
-            this.purgeData()
+            //this.purgeData()
         })
     }
     async purgeData() {

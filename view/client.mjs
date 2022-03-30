@@ -80,12 +80,32 @@ export class client {
             }, respond, reject )
         })
     }
+    getMyProducts() {
+        return new Promise( ( respond, reject ) => {
+            this.xhrpost( '/products', {
+                'token': this.#token,
+                'wsess_id': this.#wsess_id,
+                'uid': this.profile.uid
+            }, respond, reject )
+        })
+    }
     async deposit( amount ) {
         return new Promise( ( respond, reject ) => {
             this.xhrpost( '/deposit', {
                 'token': this.#token,
                 'wsess_id': this.#wsess_id,
                 'amount': amount
+            }, respond, reject )
+        })
+    }
+    async productNew( product ) {
+        return new Promise( ( respond, reject ) => {
+            this.xhrpost( '/sell', {
+                'token': this.#token,
+                'wsess_id': this.#wsess_id,
+                'product_name': product['name'],
+                'cost': product['cost'],
+                'amount': product['amount']
             }, respond, reject )
         })
     }

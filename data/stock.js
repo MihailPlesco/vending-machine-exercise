@@ -4,6 +4,7 @@ module.exports = class dfbStock {
     #client
     #keyprefix
     static ERROR_PRODUCT_NOT_FOUND = 'PRODUCT_NOT_FOUND'
+    static ERROR_PRODUCTS_SET_NOT_FOUND = 'PRODUCTS_SET_NOT_FOUND'
 
     constructor( client, keyprefix = 'stock:' ) {
         this.#client = client
@@ -15,11 +16,32 @@ module.exports = class dfbStock {
             var product_uid = crypto.randomUUID()
             var nrkey = this.#keyprefix + 'p:' + product_uid
             
+            await this.#client.HSET( nrkey, 'seller_uid', data['seller_uid'] )
             await this.#client.HSET( nrkey, 'product_name', data['product_name'] )
             await this.#client.HSET( nrkey, 'cost', data['cost'] )
             await this.#client.HSET( nrkey, 'amount', data['amount'] )
 
+            // add to seller's product set
+            await this.#client.SADD( this.#keyprefix + 'seller_set:' + data['seller_uid'], product_uid )
+
             resolve( product_uid )
+        })
+    }
+    async getStockSet( seller_uid ) {
+        return new Promise( async ( resolve, reject ) => {
+            var setkey = this.#keyprefix + 'seller_set:' + seller_uid
+            var sproduct_uids = await this.#client.SMEMBERS( setkey )
+            if ( sproduct_uids ) {
+                var sproducts = []
+                var j = -1
+                while ( ++j < sproduct_uids.length ) {
+                    sproducts.push( await this.getProduct( sproduct_uids[ j ]) )
+                }
+                resolve( sproducts )
+            }
+            else {
+                reject( dfbStock.ERROR_PRODUCTS_SET_NOT_FOUND )
+            }
         })
     }
 

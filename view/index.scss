@@ -239,5 +239,10 @@ input { vertical-align: top; }
     }
     #frame_sell {
         display: none;
+        input[type='text'] {
+            display: block;
+            margin: 15px 5%;
+            width: 90%;
+        }
     }
 }

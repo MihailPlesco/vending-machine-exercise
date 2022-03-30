@@ -28,7 +28,7 @@ const getMimeType = ( req_url ) => {
 // --- --- --- ---
 const isValidStatic = ( req_url ) => req_url.match(/^\/view\//) && req_url.match( VS_REGEXP )
 // --- --- --- ---
-const isValidRoute = ( req_url ) => req_url.match(/^\/(user|deposit|sell|buy|req_status|profile)$/)
+const isValidRoute = ( req_url ) => req_url.match(/^\/(user|deposit|sell|buy|req_status|profile|products)$/)
 // --- --- --- ---
 const readRequestData = ( req ) => {
     return new Promise( ( resolve, reject ) => {
@@ -113,7 +113,7 @@ const gw_server = http.createServer( async (req, res) => {
                 }) 
             }
         }
-        else if ( [ '/deposit', '/sell', '/buy', '/req_status', '/profile' ].indexOf(req.url) >= 0 ) {
+        else if ( [ '/deposit', '/sell', '/buy', '/req_status', '/profile', '/products' ].indexOf(req.url) >= 0 ) {
         // ---
             _req_dataOkThen = ( data ) => {
                 var _unauthorizedErrorResponse = ( ) => { endResponse( res, `{ "error": "UNAUTHORIZED" }` ) }
@@ -126,6 +126,23 @@ const gw_server = http.createServer( async (req, res) => {
                             .then( async ( token ) => {
                                 if ( token == uw.data['token'] ) {
                                     uw.getProfile( ).then( ( resp ) => { 
+                                        endResponse( res, JSON.stringify( resp ) )
+                                    } )
+                                }
+                                else {
+                                    _unauthorizedErrorResponse()
+                                }
+                            })
+                            .catch( ( err ) => {
+                                endResponse( res, `{ "error": "${err}" }` )
+                                // _unauthorizedErrorResponse()
+                            })
+                        }
+                        else if ( '/products' == req.url ) {
+                            uw.getAuthToken( )
+                            .then( async ( token ) => {
+                                if ( token == uw.data['token'] ) {
+                                    uw.getMyProducts( uw.data['uid'] ).then( ( resp ) => { 
                                         endResponse( res, JSON.stringify( resp ) )
                                     } )
                                 }

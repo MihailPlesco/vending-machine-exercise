@@ -24,7 +24,8 @@ module.exports = class StockHandler extends Worker{
                 }
                 else {
                     await this.dfb.stock.newProduct( { 
-                        "product_name": item['product_name'], 
+                        "product_name": item['product_name'],
+                        "seller_uid":    iauth.user_uid,
                         "cost":         item['cost'], 
                         "amount":       item['amount'] } )
                     .then( ( product_uid ) => {
