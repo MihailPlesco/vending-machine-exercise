@@ -1,5 +1,5 @@
-html,body,div,span,label,input,ul,li { margin: 0 0; padding: 0 0; box-sizing: border-box; font-family: 'Tahoma'; }
-body, input { font-size: 16px; user-select: none; }
+html,body,div,span,label,input,ul,li { margin: 0 0; padding: 0 0; box-sizing: border-box; }
+body, input { font-size: 16px; user-select: none; font-family: 'Tahoma'; }
 input { vertical-align: top; }
 #view_body {
     $w: 480; $h: 672;
@@ -282,6 +282,7 @@ input { vertical-align: top; }
             max-height: 240px;
             overflow: auto;
             font-size: 70%;
+            font-family: monospace;
             div div {
                 text-align: right;
             }

@@ -8,7 +8,7 @@
     <title>Vending Machine</title>
 </head>
 <body>
-    <div id="view_body" class="frame_auth">
+    <div id="view_body">
         <span id="exit" class="_hidden"></span>
         <div id="frame_auth" class="frame">
             <div class="body">
@@ -25,11 +25,11 @@
             <span class="greeting"></span>
             <div class="body">
                 <ul id="coins">
-                    <li id="coin-100" data-val="100">100</li>
-                    <li id="coin-50"  data-val="50">50</li>
-                    <li id="coin-20"  data-val="20">20</li>
-                    <li id="coin-10"  data-val="10">10</li>
-                    <li id="coin-5"   data-val="5">5</li>
+                    <li id="coin-100" data-val="100" data-listen-mousedown-target="coins">100</li>
+                    <li id="coin-50"  data-val="50" data-listen-mousedown-target="coins">50</li>
+                    <li id="coin-20"  data-val="20" data-listen-mousedown-target="coins">20</li>
+                    <li id="coin-10"  data-val="10" data-listen-mousedown-target="coins">10</li>
+                    <li id="coin-5"   data-val="5" data-listen-mousedown-target="coins">5</li>
                 </ul>
                 <div class="_mt25 _ml20">
                     <input type="text" id="deposit_amount">
@@ -47,7 +47,7 @@
                 <div id="products" class="_mv10 _bt1 _pv10"></div>
                 <div class="_mv10 _bt1 _bb1 _pv10">Deposit left: <span id="deposit_left">0</span></div>
                 Purchased:
-                <div id="purchased" class="_mv10 _bt1 _bb1 _pv10"></div>
+                <div id="purchased" class="_mv10 _bt1 _bb1 _pv10"><i data-scope="firstChild"></i></div>
             </div>
         </div>
         <div id="frame_sell" class="frame">

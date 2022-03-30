@@ -2,24 +2,25 @@ export class client {
     #wsess_id = ''
     #token    = ''
     #onauth   = {}
-    #host = document.location.protocol + '//' + document.location.host
+    #gateway_host
     
-    constructor() {
-        ;( this.#wsess_id = this.getCookie('wsess_id') ) && this.start( this.#wsess_id )
+    constructor( gateway_host = document.location.protocol + '//' + document.location.host) {
+        this.#gateway_host = gateway_host
+        ;( this.#wsess_id = this.getCookie('wsess_id') ) && this.startSession( this.#wsess_id )
     }
 
-    start( wsess_id ) {
+    startSession( wsess_id ) {
         if ( wsess_id ) {
             this.setCookie('wsess_id', wsess_id)
         }
-        this.getToken()
+        this.getAuthToken()
         .then( ( resp ) => {
             if ( !resp['token'] ) {
                 this.#resolve_onauth( false )
             }
             else {
                 this.#token = resp['token']
-                this.getProfile()
+                this.getMyProfile()
                 .then( ( profile ) => {
                     profile.deposit = parseInt( profile.deposit )
                     this.profile = profile
@@ -35,7 +36,7 @@ export class client {
         })
     }
 
-    authNew( role, username, password ) {
+    newUser( role, username, password ) {
         return new Promise( ( respond, reject ) => {
             this.xhrpost( '/user', {
                 'token': 'new_' + role,
@@ -45,7 +46,7 @@ export class client {
             }, respond, reject )
         })
     }
-    authGet( role, username, password ) {
+    authUser( role, username, password ) {
         return new Promise( ( respond, reject ) => {
             this.xhrpost( '/user', {
                 'token': role,
@@ -64,7 +65,7 @@ export class client {
         })
     }
 
-    getToken() {
+    getAuthToken() {
         return new Promise( ( respond, reject ) => {
             this.xhrpost( '/user', {
                 'token': 'get',
@@ -72,7 +73,7 @@ export class client {
             }, respond, reject )
         })
     }
-    getProfile() {
+    getMyProfile() {
         return new Promise( ( respond, reject ) => {
             this.xhrpost( '/profile', {
                 'token': this.#token,
@@ -97,15 +98,6 @@ export class client {
             }, respond, reject )
         })
     }
-    getStockProducts() {
-        return new Promise( ( respond, reject ) => {
-            this.xhrpost( '/products_all', {
-                'token': this.#token,
-                'wsess_id': this.#wsess_id,
-                'uid': this.profile.uid
-            }, respond, reject )
-        })
-    }
     async deposit( amount ) {
         return new Promise( ( respond, reject ) => {
             this.xhrpost( '/deposit', {
@@ -115,18 +107,18 @@ export class client {
             }, respond, reject )
         })
     }
-    async productNew( product ) {
+    async newProduct( product_name, product_cost, product_amount ) {
         return new Promise( ( respond, reject ) => {
             this.xhrpost( '/sell', {
                 'token': this.#token,
                 'wsess_id': this.#wsess_id,
-                'product_name': product['name'],
-                'cost': product['cost'],
-                'amount': product['amount']
+                'product_name': product_name,
+                'cost': product_cost,
+                'amount': product_amount
             }, respond, reject )
         })
     }
-    async productBuy( product_uid, amount ) {
+    async buyProduct( product_uid, amount ) {
         return new Promise( ( respond, reject ) => {
             this.xhrpost( '/buy', {
                 'token': this.#token,
@@ -136,7 +128,7 @@ export class client {
             }, respond, reject )
         })
     }
-    async productUpdate( product ) {
+    async updateProduct( product ) {
         return new Promise( ( respond, reject ) => {
             var p = {
                 'token': this.#token,
@@ -149,6 +141,7 @@ export class client {
             this.xhrpost( '/sell', p, respond, reject )
         })
     }
+
     getReqStatus( req_id ) {
         return new Promise( ( respond, reject ) => {
             this.xhrpost( '/req_status', {
@@ -165,6 +158,7 @@ export class client {
         while ( ++j < okeys.length ) this.#onauth[ okeys[ j ] ]( resp )
     }
     onauth( callback_name, callback ) {
+        //FIXME
         this.#onauth[ callback_name ] = callback
     }
 
@@ -178,7 +172,7 @@ export class client {
                 reject( xhr.status )
             }
         }
-        xhr.open( 'POST', this.#host + endpoint )
+        xhr.open( 'POST', this.#gateway_host + endpoint )
         xhr.setRequestHeader( 'Content-Type', 'application/json' )
         xhr.send( JSON.stringify( json ) )
         return xhr
@@ -205,5 +199,4 @@ export class client {
         }
         return "";
     }
-    
 }
