@@ -14,7 +14,9 @@ const MIME_TYPES = {
     'html': 'text/html',
     'mjs':  'application/javascript',
     'json': 'application/json',
-    'css':  'text/plain'
+    'css':  'text/plain',
+    'map':  'text/plain',
+    'png':  'image/png'
 }
 // --- valid static request url regexp ---
 const VS_REGEXP = new RegExp('\\.(' + Object.keys( MIME_TYPES ).join('|') + ')$')
@@ -26,7 +28,7 @@ const getMimeType = ( req_url ) => {
 // --- --- --- ---
 const isValidStatic = ( req_url ) => req_url.match(/^\/view\//) && req_url.match( VS_REGEXP )
 // --- --- --- ---
-const isValidRoute = ( req_url ) => req_url.match(/^\/(user|deposit|sell|buy|req_status)$/)
+const isValidRoute = ( req_url ) => req_url.match(/^\/(user|deposit|sell|buy|req_status|profile)$/)
 // --- --- --- ---
 const readRequestData = ( req ) => {
     return new Promise( ( resolve, reject ) => {
@@ -88,7 +90,7 @@ const gw_server = http.createServer( async (req, res) => {
                     }
                     
                     if ( uw.data['token'] == 'get' ) {
-                        uw.getAuthToken( uw.data['wsess_id'] )
+                        uw.getAuthToken( )
                         .then( ( token ) => {
                             endResponse( res, `{ "token": "${token}" }` )
                         })
@@ -96,6 +98,10 @@ const gw_server = http.createServer( async (req, res) => {
                             var rkey = ( err == 'TIMEOUT' ? 'error' : 'failed' )
                             endResponse( res, `{ "${rkey}": "${err}" }` )
                         })
+                    }
+                    else if ( uw.data['token'] == 'del' ) {
+                        uw.delAuthToken()
+                        endResponse( res, `{ "success": "1" }` )
                     }
                     else {
                         endResponse( res, `{ "wsess_id": "${uw.data['wsess_id']}" }` )
@@ -107,7 +113,7 @@ const gw_server = http.createServer( async (req, res) => {
                 }) 
             }
         }
-        else if ( [ '/deposit', '/sell', '/buy', '/req_status' ].indexOf(req.url) >= 0 ) {
+        else if ( [ '/deposit', '/sell', '/buy', '/req_status', '/profile' ].indexOf(req.url) >= 0 ) {
         // ---
             _req_dataOkThen = ( data ) => {
                 var _unauthorizedErrorResponse = ( ) => { endResponse( res, `{ "error": "UNAUTHORIZED" }` ) }
@@ -115,8 +121,25 @@ const gw_server = http.createServer( async (req, res) => {
                     .then( ( uw ) => {
                         uw.data['wsess_id'] = uw.data['wsess_id'] || cookie.get( 'wsess_id' )
 
-                        if ( '/req_status' == req.url ) {
-                            uw.getAuthToken( uw.data['wsess_id'] )
+                        if ( '/profile' == req.url ) {
+                            uw.getAuthToken( )
+                            .then( async ( token ) => {
+                                if ( token == uw.data['token'] ) {
+                                    uw.getProfile( ).then( ( resp ) => { 
+                                        endResponse( res, JSON.stringify( resp ) )
+                                    } )
+                                }
+                                else {
+                                    _unauthorizedErrorResponse()
+                                }
+                            })
+                            .catch( ( err ) => {
+                                endResponse( res, `{ "error": "${err}" }` )
+                                // _unauthorizedErrorResponse()
+                            })
+                        }
+                        else if ( '/req_status' == req.url ) {
+                            uw.getAuthToken( )
                             .then( async ( token ) => {
                                 if ( token == uw.data['token'] ) {
                                     var req_status = await uw.getReqStatus( )

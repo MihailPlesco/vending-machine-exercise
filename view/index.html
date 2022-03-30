@@ -3,9 +3,51 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vending machine</title>
+    <link rel="stylesheet" href="index.css">
+    <script type="module" src="index.mjs"></script>
+    <title>Vending Machine</title>
 </head>
 <body>
-    
+    <div id="view_body" class="frame_auth">
+        <span id="exit" class="_hidden"></span>
+        <div id="frame_auth" class="frame">
+            <div class="body">
+                <input type="radio" id="user_role_buyer" name="user_role" checked><label for="user_role_buyer" class="buyer">Buyer</label>
+                <input type="radio" id="user_role_seller" name="user_role"><label for="user_role_seller" class="seller">Seller</label>
+                <div id="auth_msg" class="_hidden">Please confirm the password</div>
+                <input type="text" id="user_username" placeholder="username">
+                <input type="password" id="user_password" placeholder="password">
+                <span id="user_auth_new" class="button">Create account</span>
+                <span id="user_auth_get" class="button">Login</span>
+            </div>
+        </div>
+        <div id="frame_deposit" class="frame">
+            <span class="greeting"></span>
+            <div class="body">
+                <ul id="coins">
+                    <li id="coin-100" data-val="100">100</li>
+                    <li id="coin-50"  data-val="50">50</li>
+                    <li id="coin-20"  data-val="20">20</li>
+                    <li id="coin-10"  data-val="10">10</li>
+                    <li id="coin-5"   data-val="5">5</li>
+                </ul>
+                <div class="_mt25 _ml20">
+                    <input type="text" id="deposit_amount">
+                    <span id="insert_deposit_amount" class="button"></span>
+                    <span id="deposit_available">0</span>
+                </div>
+            </div>
+        </div>
+        <div id="frame_buy" class="frame">
+            <div class="body">
+
+            </div>
+        </div>
+        <div id="frame_sell" class="frame">
+            <div class="body">
+
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -11,6 +11,10 @@ module.exports = class dfbWsess {
         this.#client.HSET( this.#keyprefix + wsess_id, key, value )
     }
 
+    async del( wsess_id, key ) {
+        this.#client.HDEL( this.#keyprefix + wsess_id, key )
+    }
+
     async get( wsess_id, key ) {
         if ( key == undefined ) {
             return await this.#client.HGETALL( this.#keyprefix + wsess_id )

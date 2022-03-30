@@ -73,7 +73,7 @@ module.exports = class dfbUsers {
         return { 'token': token, 'user_uid': user_uid, 'timestamp': timestamp }
     }
 
-    async getAuthByToken( token ) {
+    getAuthByToken( token ) {
         return new Promise( async ( resolve, reject ) => {
             var iauth = await this.#client.HGETALL( this.#auths_keyprefix + token )
             if ( iauth['token'] ) {
@@ -81,6 +81,21 @@ module.exports = class dfbUsers {
             } else {
                 reject()
             }
+        })
+    }
+
+    getProfile( token ) {
+        return new Promise( ( resolve, reject ) => {
+            this.getAuthByToken( token )
+            .then( async ( iauth ) => {
+                var iuser = await this.#client.HGETALL( this.#keyprefix + iauth['user_uid'] )
+                delete iuser['salt']
+                delete iuser['hash']
+                resolve( iuser )
+            })
+            .catch( ( err ) => {
+                reject( err )
+            })
         })
     }
 }

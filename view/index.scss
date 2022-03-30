@@ -1,0 +1,243 @@
+html,body,div,span,label,input,ul,li { margin: 0 0; padding: 0 0; box-sizing: border-box; font-family: 'Tahoma'; }
+body, input { font-size: 16px; user-select: none; }
+input { vertical-align: top; }
+#view_body {
+    $w: 480; $h: 672;
+    $mcl: #444;
+    $hcl: rgba(223, 255, 128, 0.3);
+    $hcl_a1: rgb(75, 100, 0);
+    @mixin abs-fit { position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
+    @mixin abs-centered { position: absolute; left: 50%; top: 50%; transform: translateX(-50%) translateY(-50%); }
+    @mixin abs_ne { position: absolute; left: auto; top: 0; right: 0; bottom: auto; }
+    @mixin abs_nw { position: absolute; left: 0; top: 0; right: auto; bottom: auto; }
+
+    background-color: #fff;
+    color: $mcl;
+
+    display: block;
+    width: #{$w}px; height: #{$h}px;
+    box-shadow: 1px 1px 3px $mcl;
+
+    @include abs-centered;
+
+    ._ml20 { margin-left: 20px; }
+    ._mt25 { margin-top: 25px; }
+    ._hidden { opacity: 0 !important; pointer-events: none !important; }
+    input, input:active, input:focus, input:checked { outline: none; }
+    input[type='text'], input[type='password'] {
+        display: inline-block;
+        height: 40px; line-height: 40px;
+        padding: 0 10px;
+    }
+    .button {
+        display: inline-block;
+        height: 40px; line-height: 40px;
+        cursor: pointer;
+        border: 1px solid $mcl;
+        padding: 0 20px;
+        
+        text-transform: uppercase;
+        text-align: center;
+        background-color: transparent;
+        font-size: 80%;
+        &:hover { 
+            background-color: $hcl;
+            box-shadow: 0px 0px 3px $hcl_a1;
+        }
+    }
+    #exit {
+        @include abs-nw;
+        display: block;
+        width: 32px; height: 36px;
+        z-index: 3;
+        margin: 12px 12px;
+        background-image: url(media/exit.png);
+        background-size: contain;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        opacity: 0.7;
+        &:hover {
+            opacity: 1;
+        }
+    }
+    .frame {
+        @include abs-fit;
+        .greeting {
+            @include abs-nw;
+            height: 40px;
+            line-height: 40px;
+            font-size: 18px;
+            width: 96%;
+            padding: 0px 0 0 30px;
+            margin: 2% 2%;
+            box-shadow: -1px 1px 3px $mcl;
+            text-align: center;
+            .name {
+                font-style: normal;
+                font-family: 'Helvetica';
+                font-size: 130%;
+                font-weight: bold;
+            }
+        }
+
+        .body {
+            @include abs-fit;
+            overflow: auto;
+            border: 30px solid transparent;
+            border-top-width: 70px;
+            text-align: center;
+
+
+        }
+    }
+    &.frame_auth    { #frame_auth    { display: block; }}
+    &.frame_deposit { #frame_deposit { display: block; }}
+    &.frame_buy     { #frame_buy     { display: block; }}
+    &.frame_sell    { #frame_sell    { display: block; }}
+    #frame_auth {
+        display: none;
+        
+        .body {
+            #auth_msg {
+                padding: 30px 0 10px 0;
+                font-family: monospace;
+            }
+            input[type='radio'] {
+                position: absolute;
+                opacity: 0;
+                transform: translateX(100%);
+                & + label {
+                    &.buyer { background-image:url(media/ico_buyer.png) }
+                    &.seller { background-image:url(media/ico_seller.png) }
+
+                    background-repeat: no-repeat;
+                    background-position: 50% 50%;
+                    background-size: contain;
+
+                    opacity: 0.5;
+                    position: relative;
+                    display: inline-block;
+                    margin: 0 20px;
+                    width: 144px; height: 144px;
+                    cursor: pointer;
+
+                    padding-top: 10px;
+                }
+                &:checked + label {
+                    opacity: 1;
+                    font-weight: bold;
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        left: 0; top: 0;
+                        display: block;
+                        width: 100%; height: 100%;
+                        background-color: $hcl;
+                    }
+                }
+            }
+            input[type='text'], input[type='password'] {
+                display: block;
+                margin: 15px 10%;
+                width: 80%;
+            }
+
+            span.button {
+                margin: 10px 0;
+            }
+        }
+    }
+
+    #frame_deposit {
+        display: none;
+        .body {
+            text-align: left;
+            background-image: url(media/deposit_bag.png);
+            background-position: 50% 60%;
+            background-size: 200px auto;
+            background-repeat: no-repeat;
+
+            &:after {
+                content: '';
+                pointer-events: none;
+                @include abs-ne;
+                display: block;
+                width: 200px; height: 200px;
+                background-image: url(media/vending_machine.png);
+                background-repeat: no-repeat;
+                background-position: top right;
+                opacity: 0.5;
+            }
+            &.pushing_coin:after{
+                opacity: 0.7;
+                background-color: $hcl;
+            }
+            
+            ul#coins {
+                display: block;
+                width: 160px;
+                margin-top: 10px;
+                margin-left: 10px;
+                text-align: center;
+                li {
+                    display: inline-block;
+                    width: 40px; height: 40px;
+                    line-height: 42px;
+                    font-size: 70%;
+                    font-family: 'Helvetica';
+                    border-radius: 50% 50%;
+                    text-align: center;
+                    cursor: pointer;
+                    margin: 5px 5px;
+                    color: $mcl;
+                    background-image: url(media/coin.png);
+                    background-repeat: no-repeat;
+                    background-position: 52% 52%;
+                    background-size: contain;
+                    &:hover {
+                        box-shadow: 0px 0px 4px $hcl_a1;
+                        font-weight: bold;
+                    }
+                    &.active { 
+                        color: red;
+                        box-shadow: none;
+                    }
+
+                    &#coin-100 { transform: scale(1.4); }
+                    &#coin-50  { transform: scale(1.2); }
+                    &#coin-20  { transform: scale(1.1); }
+                    &#coin-10  { transform: scale(1.05); }
+                    &#coin-5   { transform: scale(1); }
+                }
+            }
+            input#deposit_amount {
+                width: 100px;
+            }
+            #insert_deposit_amount {
+                display: inline-block;
+                width: 40px; height: 40px;
+                background-image: url(media/ico_buyer.png);
+                background-size: contain;
+                background-position: 50% 50%;
+            }
+            #deposit_available {
+                margin-top: 210px;
+                width: 100px;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                text-align: center;
+                font-weight: bold;
+                font-size: 32px;
+                font-family: 'Helvetica';
+            }
+        }
+    }
+
+    #frame_buy {
+        display: none;
+    }
+    #frame_sell {
+        display: none;
+    }
+}

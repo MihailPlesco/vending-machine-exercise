@@ -6,16 +6,17 @@ module.exports = class UserWorker extends Worker {
     static valid_data_keys =  [ 'wsess_id', 'token', 'username', 'password', 'amount', 'product_uid', 'product_name', 'cost', 'req_id' ]
     static allowed_requests = [ '/auth', '/deposit', '/sell', '/buy' ]
 
-    async getAuthToken( wsess_id ) {
+    async getAuthToken( ) {
         var max_waiting_time_ms = 1000
 
         return new Promise( async ( resolve, reject ) => {
             var token = null, failed = null, ts0 = _ts()
             var getTokenAttempt_timeout, getTokenAttempt = async () => {
-                if ( token = await this.dfb.wsess.get( wsess_id, 'token' ) ) {
+                if ( token = await this.dfb.wsess.get( this.data['wsess_id'], 'token' ) ) {
                     resolve( token )
                 }
-                else if ( failed = await this.dfb.wsess.get( wsess_id, 'failed' ) ) {
+                else if ( failed = await this.dfb.wsess.get( this.data['wsess_id'], 'failed' ) ) {
+                    this.dfb.wsess.del( this.data['wsess_id'], 'failed' )
                     reject( failed )
                 }
                 else if ( _ts() - ts0 > max_waiting_time_ms ) {
@@ -27,6 +28,15 @@ module.exports = class UserWorker extends Worker {
             }
             getTokenAttempt()
         })
+    }
+
+    async delAuthToken( ) {
+        this.dfb.wsess.del( this.data['wsess_id'], 'token' )
+        this.dfb.wsess.del( this.data['wsess_id'], 'failed' )
+    }
+
+    async getProfile() {
+        return this.dfb.users.getProfile( this.data['token'] )
     }
 
     async getReqStatus() {
