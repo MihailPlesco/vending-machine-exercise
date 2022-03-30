@@ -106,7 +106,7 @@ var updateMyProductsList = () => {
         var plist = document.createDocumentFragment(), pitem
         while( ++j < products.length ) {
             pitem = document.createElement('div')
-            pitem.textContent = `${products[j].product_name} ( x ${products[j].amount} ) - \$${products[j].cost}` 
+            pitem.innerHTML = `<span data-add="10" data-uid="${products[j]['product_uid']}">[+10]</span> - ${products[j]['product_name']} ( x ${products[j]['amount']} ) - \$${products[j]['cost']}` 
             plist.appendChild( pitem )
         }
         _el( 'my_products' ).innerHTML = ''
@@ -116,6 +116,33 @@ var updateMyProductsList = () => {
         console.warn( err )
     })
 }
+_el( 'my_products' ).addEventListener( 'click', ( evt ) => {
+    var a
+    if ( a = parseInt( evt.target.getAttribute( 'data-add' ) ) ) {
+        c.productUpdate( { 'uid': evt.target.getAttribute( 'data-uid' ), 'amount': a } )
+        .then( ( resp ) => {
+            if ( resp['req_id'] ) {
+                setTimeout(()=>{
+                    c.getReqStatus( resp['req_id'] )
+                    .then( ( resp ) => {
+                        if ( resp['success'] ) {
+                            updateMyProductsList()
+                        }
+                        else {
+                            console.warn( resp )
+                        }
+                    })
+                    .catch( ( resp ) => {
+                        console.warn( resp )
+                    })
+                }, 100)
+            }
+        })
+        .catch( ( err ) => {
+            console.warn( err )
+        })
+    }
+})
 
 _el( 'coins' ).addEventListener( 'mousedown', ( evt ) => {
     var val
@@ -135,7 +162,12 @@ _el( 'insert_deposit_amount' ).addEventListener( 'mousedown', () => {
     }
 })
 
-_el( 'product_new' ).addEventListener( 'click', () => {
+_el( 'product_new' ).addEventListener( 'click', () => { newProduct() })
+_el( 'product_amount').addEventListener( 'keydown', ( evt ) => {
+    ;( evt.code == 'Enter' ) && newProduct()
+})
+
+var newProduct = () => {
     c.productNew({
         'name':   _el('product_name').value,
         'cost':   parseInt( _el('product_cost').value ),
@@ -148,6 +180,9 @@ _el( 'product_new' ).addEventListener( 'click', () => {
                 .then( ( resp ) => {
                     console.log( resp )
                     if ( resp['success'] ) {
+                        _el( 'product_name').value = ''
+                        _el( 'product_cost').value = ''
+                        _el( 'product_amount').value = ''
                         updateMyProductsList()
                     }
                     else {
@@ -163,5 +198,4 @@ _el( 'product_new' ).addEventListener( 'click', () => {
     .catch( ( resp ) => {
         console.warn( resp )
     } )
-})
-
+}

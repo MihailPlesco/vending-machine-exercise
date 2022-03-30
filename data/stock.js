@@ -1,5 +1,6 @@
 require( 'dotenv' ).config()
 const crypto = require( 'crypto' )
+const { resolve } = require('path')
 module.exports = class dfbStock {
     #client
     #keyprefix
@@ -25,6 +26,20 @@ module.exports = class dfbStock {
             await this.#client.SADD( this.#keyprefix + 'seller_set:' + data['seller_uid'], product_uid )
 
             resolve( product_uid )
+        })
+    }
+    async updateProduct( data ) {
+        return new Promise( async ( resolve, reject ) => {
+            var product_uid = data['product_uid']
+            var ukey = this.#keyprefix + 'p:' + product_uid
+            
+            // await this.#client.HSET( nrkey, 'product_name', data['product_name'] )
+            ;( data['cost'] ) && await this.#client.HSET( ukey, 'cost', data['cost'] )
+            ;( data['amount'] ) && await this.#client.HINCRBY( ukey, 'amount', data['amount'] )
+
+            this.getProduct( product_uid )
+            .then( ( iproduct ) => { resolve( iproduct )})
+            .catch( ( err ) => { reject( err ) })
         })
     }
     async getStockSet( seller_uid ) {

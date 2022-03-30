@@ -109,6 +109,19 @@ export class client {
             }, respond, reject )
         })
     }
+    async productUpdate( product ) {
+        return new Promise( ( respond, reject ) => {
+            var p = {
+                'token': this.#token,
+                'wsess_id': this.#wsess_id,
+                'product_uid': product['uid']
+            }
+            ;(product['product_name']) && (p['product_name'] = product['product_name'])
+            ;(product['cost']) && (p['cost'] = product['cost'])
+            ;(product['amount']) && (p['amount'] = product['amount'])
+            this.xhrpost( '/sell', p, respond, reject )
+        })
+    }
     getReqStatus( req_id ) {
         return new Promise( ( respond, reject ) => {
             this.xhrpost( '/req_status', {

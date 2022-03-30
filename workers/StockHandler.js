@@ -19,21 +19,33 @@ module.exports = class StockHandler extends Worker{
                 if ( !iauth.user_uid.match(/^seller_/) ) {
                     req_status['failed'] = StockHandler.ERROR_SELL_SELLERS_ONLY
                 }
-                else if ( dcost % 5 != 0 ) {
+                else if ( dcost && ( dcost % 5 != 0 ) ) {
                     req_status['failed'] = StockHandler.ERROR_WRONG_COST
                 }
                 else {
-                    await this.dfb.stock.newProduct( { 
-                        "product_name": item['product_name'],
-                        "seller_uid":    iauth.user_uid,
-                        "cost":         item['cost'], 
-                        "amount":       item['amount'] } )
-                    .then( ( product_uid ) => {
-                        req_status['success'] = product_uid
-                    })
-                    .catch( ( err ) => {
-                        req_status['failed'] = err
-                    })
+                    
+                    if ( item['product_uid'] ) {
+                        await this.dfb.stock.updateProduct( item )
+                        .then( ( iproduct ) => {
+                            req_status['success'] = iproduct
+                        })
+                        .catch( ( err ) => {
+                            req_status['failed'] = err
+                        })
+                    }
+                    else {
+                        await this.dfb.stock.newProduct( { 
+                            "product_name": item['product_name'],
+                            "seller_uid":   iauth.user_uid,
+                            "cost":         item['cost'], 
+                            "amount":       item['amount'] } )
+                        .then( ( product_uid ) => {
+                            req_status['success'] = product_uid
+                        })
+                        .catch( ( err ) => {
+                            req_status['failed'] = err
+                        })
+                    }
                 }
                 this.dfb.wsess.setReqStatus( item, req_status )
             })

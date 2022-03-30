@@ -19,6 +19,7 @@ module.exports = class fifo {
         var last_item_index = await this.#client.INCR( this.#keyprefix + 'right' )
 
         var item_key = this.#keyprefix + 'item:' + last_item_index
+        this.#client.DEL( item_key )
         var i = -1, ikeys = Object.keys( item )
         while ( ++i < ikeys.length ) {
             await this.#client.HSET( item_key, ikeys[i], item[ ikeys[i] ] )

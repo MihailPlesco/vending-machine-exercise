@@ -244,5 +244,13 @@ input { vertical-align: top; }
             margin: 15px 5%;
             width: 90%;
         }
+        #my_products {
+            span {
+                cursor: pointer;
+                font-family: monospace;
+                color: $hcl_a1;
+                font-size: 80%;
+            }
+        }
     }
 }
