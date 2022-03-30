@@ -1,12 +1,17 @@
-#Vending machine exercise.
+# Vending machine exercise.
 
-##(simple serverless architecture)
+## (simple serverless architecture)
 
 ### Running the app:
-- edit .env
-- start the gateway server: ./gateway.js
 
-###Data
+> docker-compose up --remove-orphans
+
+#### or if you have node and redis-server running on your local pc:
+- edit .env
+> ./gateway.js
+
+
+### Data
 
 **users**
 > uid ( = <role>_<username> )
@@ -60,7 +65,7 @@
 >            ╲ auth ╱              ───────────
 
 
-#####Requests
+##### Requests
 **user**.worker _reqAuth_ payload:
 > token [(new_)(seller|buyer)] _( register|login with user/pass )_
 > username

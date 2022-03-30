@@ -32,6 +32,8 @@ module.exports = class DataFabrik {
         })
         this.#client.connect().then(() => {
             this.purgeData()
+        }).catch((err) => {
+            console.log( err )
         })
     }
     async purgeData() {

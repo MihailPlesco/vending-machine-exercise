@@ -7,7 +7,6 @@ const zlib = require('zlib')
 const crypto = require('crypto')
 const UserWorker = require('./workers/User.js')
 
-const GATEWAY_PORT = 8000
 const _ts = () => { return new Date().getTime() }
 // --- extension => http content-type mime type ---
 const MIME_TYPES = {
@@ -53,7 +52,6 @@ const endResponse = ( res, json = '{}' ) => {
 // --- the main gateway server ---
 const gw_server = http.createServer( async (req, res) => {
     var cookie = new http_cookie( req, res )
-
     if ( isValidStatic( req.url ) ) 
     {// -- serve static files --
         res.writeHead( 200, { 
@@ -215,5 +213,6 @@ const gw_server = http.createServer( async (req, res) => {
 
 gw_server.on( 'clientError', ( err, socket ) => socket.end( 'HTTP/1.1 400 Bad Request\r\n\r\n' ) )
 
-console.log( 'gateway server listening on port %s', GATEWAY_PORT )
-gw_server.listen( GATEWAY_PORT )
+console.log('Server listening on port %s', process.env.PORT )
+console.log(`web view: http://127.0.0.1:${process.env.PORT}/view/index.html`)
+gw_server.listen( process.env.PORT )

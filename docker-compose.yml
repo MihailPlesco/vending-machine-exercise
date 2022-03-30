@@ -1,0 +1,26 @@
+# docker-compose.yml
+version: '2'
+
+services:
+  # redis:
+  #   image: redis
+  #   container_name: cache
+  #   expose:
+  #     - 6379
+
+  vending_machine:
+    build: ./
+    volumes:
+      - ./:/var/www/app
+    ports:
+      - 8000:8000
+    # links:
+    #   - redis
+    environment:
+      - NODE_ENV=development
+      - PORT=8000
+      # - REDIS_HOST=redis://cache
+      - REDIS_PORT=6379
+    command:
+      sh -c 'service redis-server start & ./gateway.js'
+      # sh -c './gateway.js'
