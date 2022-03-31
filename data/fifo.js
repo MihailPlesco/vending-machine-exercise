@@ -13,6 +13,11 @@ module.exports = class fifo {
         this.#last_in_queue_callback = last_in_queue_callback
     }
 
+    // Relying on the atomic aspect of the redisClient.INCR operation
+    
+    //TODO: adding additional keyprefix:left#:*, keyprefix:right#:* and keyprefix:item#:*
+    //      at runtime, will fix the fifo.LOCK necesity
+
     async push( item ) {
         while ( await this.#client.GET( this.#lock_key ) > 0 ) { /* wait */ }
 
