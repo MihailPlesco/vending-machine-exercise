@@ -16,7 +16,7 @@ module.exports = class fifo {
     // Relying on the atomic aspect of the redisClient.INCR operation
     
     //TODO: adding additional keyprefix:left#:*, keyprefix:right#:* and keyprefix:item#:*
-    //      at runtime, will fix the fifo.LOCK necesity
+    //      at runtime, will fix the waiting time due to fifo.LOCK
 
     async push( item ) {
         while ( await this.#client.GET( this.#lock_key ) > 0 ) { /* wait */ }
