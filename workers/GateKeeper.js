@@ -17,18 +17,23 @@ module.exports = class GateKeeper extends Worker {
         // -- new BUYER/SELLER -----------------------
         if ( item['token'] == 'new_buyer' || item['token'] == 'new_seller' ) {
             var role = item['token'].replace(/^new_/,'')
-            this.dfb.users.new( { 
-                "uid":      `${role}_${item['username']}`, 
-                "username": item['username'], 
-                "password": item['password'], 
-                "role":     role, 
-                "deposit":  0 } )
-            .then( ( iauth ) => {
-                this.dfb.wsess.set( item['wsess_id'], 'token', iauth['token'] )
-            })
-            .catch( ( err ) => {
-                this.dfb.wsess.set( item['wsess_id'], 'failed', err )
-            })
+            if ( item['username'] && item['password'] ) {
+                this.dfb.users.new( { 
+                    "uid":      `${role}_${item['username']}`, 
+                    "username": item['username'], 
+                    "password": item['password'], 
+                    "role":     role, 
+                    "deposit":  0 } )
+                .then( ( iauth ) => {
+                    this.dfb.wsess.set( item['wsess_id'], 'token', iauth['token'] )
+                })
+                .catch( ( err ) => {
+                    this.dfb.wsess.set( item['wsess_id'], 'failed', err )
+                })
+            }
+            else {
+                this.dfb.wsess.set( item['wsess_id'], 'failed', 'BAD_INPUT' )
+            }
         }
         // -- new LOGIN -----------------------
         else if ( item['token'] == 'buyer' || item['token'] == 'seller' ) {

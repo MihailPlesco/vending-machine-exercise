@@ -24,7 +24,7 @@ module.exports = class dfbStock {
             await this.#client.HSET( nrkey, 'amount', data['amount'] )
 
             // add to seller's product set
-            await this.#client.SADD( this.#keyprefix + 'seller_set:' + data['seller_uid'], product_uid )
+            await this.#client.SADD( this.#keyprefix + data['seller_uid'], product_uid )
 
             resolve( product_uid )
         })
@@ -45,7 +45,7 @@ module.exports = class dfbStock {
     }
     async getStockSet( seller_uid ) {
         return new Promise( async ( resolve, reject ) => {
-            var setkey = this.#keyprefix + 'seller_set:' + seller_uid
+            var setkey = this.#keyprefix + seller_uid
             var sproduct_uids = await this.#client.SMEMBERS( setkey )
             if ( sproduct_uids ) {
                 var sproducts = []

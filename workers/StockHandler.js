@@ -5,6 +5,7 @@ module.exports = class StockHandler extends Worker{
     static ERROR_SELL_SELLERS_ONLY = 'SELL_SELLERS_ONLY'
     static ERROR_WRONG_COST = 'WRONG_COST'
     static ERROR_EMPTY_STOCK = 'EMPTY_STOCK'
+    static ERROR_BAD_INPUT = 'BAD_INPUT'
     static resolve = {
         '/sell': 'resolveSellRequest',
         '/buy':  'resolveBuyRequest'
@@ -34,23 +35,29 @@ module.exports = class StockHandler extends Worker{
                         })
                     }
                     else {
-                        await this.dfb.stock.newProduct( { 
-                            "product_name": item['product_name'],
-                            "seller_uid":   iauth.user_uid,
-                            "cost":         item['cost'], 
-                            "amount":       item['amount'] } )
-                        .then( ( product_uid ) => {
-                            req_status['success'] = product_uid
-                        })
-                        .catch( ( err ) => {
-                            req_status['failed'] = err
-                        })
+                        if ( (item['product_name'].length > 0) && ( parseInt(item['cost']) ) > 0 && ( parseInt(item['amount'])>0 ) )
+                        {
+                            await this.dfb.stock.newProduct( { 
+                                "product_name": item['product_name'],
+                                "seller_uid":   iauth.user_uid,
+                                "cost":         parseInt(item['cost']), 
+                                "amount":       parseInt(item['amount']) } )
+                            .then( ( product_uid ) => {
+                                req_status['success'] = product_uid
+                            })
+                            .catch( ( err ) => {
+                                req_status['failed'] = err
+                            })
+                        }
+                        else {
+                            req_status['failed'] = StockHandler.ERROR_BAD_INPUT
+                        }
                     }
                 }
                 this.dfb.wsess.setReqStatus( item, req_status )
             })
             .catch( ( err ) => {
-                this.dfb.wsess.setReqStatus( item, {'failed': 'unauthorized'} )
+                this.dfb.wsess.setReqStatus( item, {'failed': 'unauthorized--'} )
             })
         }
     }

@@ -100,23 +100,33 @@ export class client {
     }
     async deposit( amount ) {
         return new Promise( ( respond, reject ) => {
-            this.xhrpost( '/deposit', {
-                'token': this.#token,
-                'wsess_id': this.#wsess_id,
-                'amount': amount
-            }, respond, reject )
+            if ( !parseInt( amount ) || ( amount % 5 != 0) ) {
+                reject( 'BAD_AMOUNT' )
+            }
+            else {
+                this.xhrpost( '/deposit', {
+                    'token': this.#token,
+                    'wsess_id': this.#wsess_id,
+                    'amount': amount
+                }, respond, reject )
+            }
         })
     }
     async newProduct( product_name, product_cost, product_amount ) {
-        return new Promise( ( respond, reject ) => {
-            this.xhrpost( '/sell', {
-                'token': this.#token,
-                'wsess_id': this.#wsess_id,
-                'product_name': product_name,
-                'cost': product_cost,
-                'amount': product_amount
-            }, respond, reject )
-        })
+        if ( !product_name || !parseInt(product_cost) || !parseInt(product_amount) ) {
+            reject( 'BAD_INPUT' )
+        }
+        else {
+            return new Promise( ( respond, reject ) => {
+                this.xhrpost( '/sell', {
+                    'token': this.#token,
+                    'wsess_id': this.#wsess_id,
+                    'product_name': product_name,
+                    'cost': product_cost,
+                    'amount': product_amount
+                }, respond, reject )
+            })
+        }
     }
     async buyProduct( product_uid, amount ) {
         return new Promise( ( respond, reject ) => {
