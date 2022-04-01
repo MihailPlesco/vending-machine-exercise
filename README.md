@@ -7,8 +7,8 @@
 > docker-compose up --remove-orphans
 
 #### or if you have node and redis-server running on your local pc:
-- edit .env
-> ./gateway.js
+edit .env
+> npm run open
 
 
 ### Data

@@ -22,5 +22,5 @@ services:
       # - REDIS_HOST=redis://cache
       - REDIS_PORT=6379
     command:
-      sh -c 'service redis-server start & ./gateway.js'
-      # sh -c './gateway.js'
+      sh -c 'service redis-server start & ./myvmgw.js'
+      # sh -c './myvmgw.js'

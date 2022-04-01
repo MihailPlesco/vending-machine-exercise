@@ -1,16 +1,32 @@
 {
-  "name": "vending_machine",
-  "version": "1.0.0",
-  "description": "Vending Machine Exercise",
-  "main": "gateway.js",
+  "name": "@oazyx/myvm",
+  "version": "0.1.0",
+  "description": "Vending Machine - a simple approach to solving big problems",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./tests/test_01_user_signup.py",
+    "open": "./myvmgw.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/MihailPlesco/vending-machine-exercise.git"
+  },
+  "keywords": [
+    "oazyx"
+  ],
   "author": "Mihail Plesco",
-  "license": "ISC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MihailPlesco/vending-machine-exercise/issues"
+  },
+  "homepage": "https://github.com/MihailPlesco/vending-machine-exercise#readme",
+  
   "dependencies": {
     "dotenv": "^16.0.0",
     "http.cookie": "^1.0.2",
     "redis": "^4.0.4"
+  },
+  "devDependencies": {
+    "sass": "^1.49.10"
   }
 }
